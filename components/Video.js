@@ -70,6 +70,7 @@ class Video extends Component {
     this.animFullscreen = new Animated.Value(Win.width * 0.5625)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
+    this.toggleFS=this.toggleFS.bind(this);
   }
 
   componentDidMount() {
@@ -242,9 +243,9 @@ class Video extends Component {
           const initialOrient = Orientation.getInitialOrientation()
           const height = orientation !== initialOrient ?
             Win.width : Win.height
-          this.props.onFullScreen(this.state.fullScreen)
-          if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
-          this.animToFullscreen(height)
+            this.props.onFullScreen(this.state.fullScreen)
+            if (this.props.rotateToFullScreen) Orientation.lockToLandscape()
+            this.animToFullscreen(height)
         } else {
           if (this.props.fullScreenOnly) {
             this.setState({ paused: true }, () => this.props.onPlay(!this.state.paused))
@@ -260,7 +261,8 @@ class Video extends Component {
     })
   }
 
-  animToFullscreen(height) {
+  animToFullscreen(h) {
+    const height = h -StatusBar.currentHeight;
     Animated.parallel([
       Animated.timing(this.animFullscreen, { toValue: height, duration: 200 }),
       Animated.timing(this.animInline, { toValue: height, duration: 200 })
@@ -352,9 +354,7 @@ class Video extends Component {
       onMorePress,
       inlineOnly,
       playInBackground,
-      playWhenInactive,
-      controlDuration,
-      hideFullScreenControl
+      playWhenInactive
     } = this.props
 
     const inline = {
@@ -377,7 +377,6 @@ class Video extends Component {
           fullScreen ? null : style
         ]}
       >
-        <StatusBar hidden={fullScreen} />
         {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
@@ -423,8 +422,6 @@ class Video extends Component {
           onMorePress={() => onMorePress()}
           theme={setTheme}
           inlineOnly={inlineOnly}
-          controlDuration={controlDuration}
-          hideFullScreenControl={hideFullScreenControl}
         />
       </Animated.View>
     )
@@ -456,7 +453,6 @@ Video.propTypes = {
   loop: PropTypes.bool,
   autoPlay: PropTypes.bool,
   inlineOnly: PropTypes.bool,
-  hideFullScreenControl: PropTypes.bool,
   fullScreenOnly: PropTypes.bool,
   playInBackground: PropTypes.bool,
   playWhenInactive: PropTypes.bool,
@@ -476,8 +472,7 @@ Video.propTypes = {
   logo: PropTypes.string,
   title: PropTypes.string,
   theme: PropTypes.object,
-  resizeMode: PropTypes.string,
-  controlDuration: PropTypes.number,
+  resizeMode: PropTypes.string
 }
 
 Video.defaultProps = {
@@ -506,8 +501,7 @@ Video.defaultProps = {
   logo: undefined,
   title: '',
   theme: defaultTheme,
-  resizeMode: 'contain',
-  controlDuration: 3,
+  resizeMode: 'contain'
 }
 
 export default Video
