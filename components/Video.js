@@ -18,7 +18,7 @@ import { Controls } from './'
 import { checkSource } from './utils'
 const Win = Dimensions.get('window')
 const backgroundColor = '#000'
-
+const AVideoPlayer =Animated.createAnimatedComponent(VideoPlayer);
 const styles = StyleSheet.create({
   background: {
     backgroundColor,
@@ -102,7 +102,7 @@ class Video extends Component {
       inlineHeight,
       duration: data.duration
     }, () => {
-      Animated.timing(this.animInline, { toValue: inlineHeight, duration: 200 }).start()
+      Animated.timing(this.animInline, { toValue: inlineHeight, duration: 200 ,useNativeDriver:false}).start()
       this.props.onPlay(!this.state.paused)
       if (!this.state.paused) {
         KeepAwake.activate()
@@ -169,6 +169,9 @@ class Video extends Component {
   }
 
   onError(msg) {
+    if(__DEV__){
+      console.log('log::: react-native-af-video',msg)
+    }
     this.props.onError(msg)
     const { error } = this.props
     this.setState({ renderError: true }, () => {
@@ -264,16 +267,16 @@ class Video extends Component {
   animToFullscreen(h) {
     const height = h -StatusBar.currentHeight;
     Animated.parallel([
-      Animated.timing(this.animFullscreen, { toValue: height, duration: 200 }),
-      Animated.timing(this.animInline, { toValue: height, duration: 200 })
+      Animated.timing(this.animFullscreen, { toValue: height, duration: 200 ,useNativeDriver:false}),
+      Animated.timing(this.animInline, { toValue: height, duration: 200 ,useNativeDriver:false })
     ]).start()
   }
 
   animToInline(height) {
     const newHeight = height || this.state.inlineHeight
     Animated.parallel([
-      Animated.timing(this.animFullscreen, { toValue: newHeight, duration: 100 }),
-      Animated.timing(this.animInline, { toValue: this.state.inlineHeight, duration: 100 })
+      Animated.timing(this.animFullscreen, { toValue: newHeight, duration: 100 ,useNativeDriver:false }),
+      Animated.timing(this.animInline, { toValue: this.state.inlineHeight, duration: 100 ,useNativeDriver:false })
     ]).start()
   }
 
@@ -381,11 +384,12 @@ class Video extends Component {
           ((loading && placeholder) || currentTime < 0.01) &&
           <Image resizeMode="cover" style={styles.image} {...checkSource(placeholder)} />
         }
-        <VideoPlayer
+        <AVideoPlayer
           {...checkSource(url)}
           paused={paused}
           resizeMode={resizeMode}
           repeat={loop}
+          // style={{width:100,height:100}}
           style={fullScreen ? styles.fullScreen : inline}
           ref={(ref) => { this.player = ref }}
           rate={rate}
@@ -505,3 +509,4 @@ Video.defaultProps = {
 }
 
 export default Video
+export {VideoPlayer};
