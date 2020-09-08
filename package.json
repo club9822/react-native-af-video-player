@@ -46,7 +46,7 @@
   "bundleDependencies": false,
   "dependencies": {
     "react-native-keep-awake": "^2.0.6",
-    "react-native-orientation": "^3.1.0",
+    "react-native-orientation": "git://github.com/club9822/react-native-orientation.git",
     "react-native-slider": "git+https://github.com/abbasfreestyle/react-native-slider.git",
     "react-native-vector-icons": "^7.0.0",
     "react-native-video": "^4.4.5"
