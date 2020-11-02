@@ -58,7 +58,7 @@ class Video extends Component {
       paused: !props.autoPlay,
       muted: false,
       fullScreen: false,
-      inlineHeight: Win.width * 0.5625,
+      inlineHeight: this.props.inlineHeight ||  Win.width * 0.5625,
       loading: false,
       duration: 0,
       progress: 0,
@@ -66,8 +66,8 @@ class Video extends Component {
       seeking: false,
       renderError: false
     }
-    this.animInline = new Animated.Value(Win.width * 0.5625)
-    this.animFullscreen = new Animated.Value(Win.width * 0.5625)
+    this.animInline = new Animated.Value(this.props.inlineHeight || Win.width * 0.5625)
+    this.animFullscreen = new Animated.Value(this.props.inlineHeight || Win.width * 0.5625)
     this.BackHandler = this.BackHandler.bind(this)
     this.onRotated = this.onRotated.bind(this)
     this.toggleFS=this.toggleFS.bind(this);
@@ -91,9 +91,9 @@ class Video extends Component {
     if (!this.state.loading) return
     this.props.onLoad(data)
     const { height, width } = data.naturalSize
-    const ratio = height === 'undefined' && width === 'undefined' ?
+    const ratio = !height && !width?
       (9 / 16) : (height / width)
-    const inlineHeight = this.props.lockRatio ?
+    const inlineHeight =this.props.inlineHeight?this.props.inlineHeight: this.props.lockRatio ?
       (Win.width / this.props.lockRatio)
       : (Win.width * ratio)
     this.setState({
@@ -184,7 +184,7 @@ class Video extends Component {
           type = Alert.alert(error.title, error.message, error.button, error.options)
           break
         default:
-          type = Alert.alert('Oops!', 'There was an error playing this video, please try again later.', [{ text: 'Close' }])
+          type = Alert.alert('طا!', 'مشکلی پیش آمده.', [{ text: 'Close' }])
           break
       }
       return type
