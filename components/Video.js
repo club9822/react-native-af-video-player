@@ -184,7 +184,7 @@ class Video extends Component {
           type = Alert.alert(error.title, error.message, error.button, error.options)
           break
         default:
-          type = Alert.alert('طا!', 'مشکلی پیش آمده.', [{ text: 'Close' }])
+          type = Alert.alert('خطا!', 'مشکلی پیش آمده.', [{ text: 'Close' }])
           break
       }
       return type
